@@ -43,16 +43,15 @@ void  addlayer(Layers* l, Layer* lay) {
 	}
 
 	int index = l->index;
-	
-	Layer* layer = (l->layers[index]);
-	Layer * lptr= layer;
-	lptr	= lay;
-	//if (l->index != 0) {
-	//		Layer* previouslayer = *(layers+ sizeof(Layer*) * (index-1));
+	printf("=%d=", l->index);	
+	l->layers[index]= lay;
 
-	//		int weightdim[2] = { previouslayer->neuronsCount,lay->neuronsCount};
-	//		initWeightMatrix(previouslayer, weightdim);
-	//	}
+	if (l->index != 0) {
+			Layer* previouslayer = l->layers[index-1];
+
+			int weightdim[2] = { previouslayer->neuronsCount,lay->neuronsCount};
+			initWeightMatrix(previouslayer, weightdim);
+		}
 	l->index++;
 	printf("+ New layer added \n");
 	
@@ -65,34 +64,34 @@ void printLayer(Layer* L) {
 	for (int i = 0; i < L->neuronsCount; i++) {
 		printf(" %d, ", neuronVect[i]);
 	}
-//	int* Mat = L->weightMatrix;
-//	int row = L->weightMatrixDimension[0];
-//	int columns = L->weightMatrixDimension[1];
+	int* Mat = L->weightMatrix;
 	
-//	printf("\n ======== WEIGHTS ======== \n");
-//
-//	for (int i = 0; i < row; i++) {
+	printf("\n ======== WEIGHTS ======== \n");
 
-//		for (int j = 0; j < columns; j++) {
-//			int offset = i + row * j; //rows-major ordering
-//				printf("%d \t", Mat[offset]);
-//		}
-//		printf("\n");
-//
-//	}
+	
+		int row = L->weightMatrixDimension[0];
+		int columns = L->weightMatrixDimension[1];
+		for (int i = 0; i < row; i++) {
+
+			for (int j = 0; j < columns; j++) {
+				int offset = i + row * j; //rows-major ordering
+					printf("%d \t", Mat[offset]);
+			}
+			printf("\n");
+
+		}
 
 	printf("]\n======================\n ");
 
 }
 
-	void printAllLayers(Layers* ls) {
+void printAllLayers(Layers* ls) {
 
-		for (int i = 0; i < ls->index-1; i++) {//< to not print the output layer
-//
-//printf("pointer :%d\n", (*(ls->layers + sizeof(Layer*) * i))->neuronsCount);
-//			printLayer(*(ls->layers + sizeof(Layer*) * i));
-		}
+	for (int i = 0; i < ls->index-1; i++) {//< to not print the output layer
+		printLayer(ls->layers[i]);
+
 	}
+}
 
 Layer constructLayer(size_t neuronsCount) {
 	int* neuronsVector = (int*)malloc(sizeof(int) * neuronsCount);
@@ -136,14 +135,13 @@ Layer constructLayer(size_t neuronsCount) {
 
 int main() {
 	printer();
-	Layer inputLayer = constructLayer(2);
+	Layer inputLayer = constructLayer(3);
 	Layer hiddenLayer = constructLayer(2);
 	Layer outputLayer = constructLayer(2);
 	Layers* l = newLayers(3);
 	addlayer(l, &hiddenLayer);
 	addlayer(l, &inputLayer);
 	addlayer(l, &outputLayer);
-
 	printAllLayers(l);
 
 
