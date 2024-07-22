@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "math.h"
 #define WEIGHT_INIT 1
 #define NEURON_INIT 1
 
