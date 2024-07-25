@@ -10,10 +10,8 @@
 
 
 typedef struct {
-	int neuronsCount;
-	int* neuronsVector;
-	int* weightMatrix;
-	int weightMatrixDimension[2];
+	Vector *vector;
+	Matrix *matrix;
 }Layer;
 typedef struct Layers {
 	size_t size;
@@ -53,11 +51,9 @@ void  addlayer(Layers* l, Layer* lay) {
 	l->layers[index]= lay;
 
 	if (l->index != 0) {
-			Layer* previouslayer = l->layers[index-1];
-
-			int weightdim[2] = { previouslayer->neuronsCount,lay->neuronsCount};
-			initWeightMatrix(previouslayer, weightdim);
-		}
+		Layer* previouslayer = l->layers[index-1];
+		previouslayer->matrix = initMatrix(previouslayer->vector->rows,lay->vector->rows);
+	}
 	l->index++;
 	printf("+ New layer added \n");
 	
@@ -65,29 +61,10 @@ void  addlayer(Layers* l, Layer* lay) {
 }
 void printLayer(Layer* L) {
 	if (L == NULL) { printf("layer is null"); exit(-1); }
-	int* neuronVect = L->neuronsVector;
-	printf("\n\n======== LAYER NEURONS: %d ========\n ", L->neuronsCount );
-	for (int i = 0; i < L->neuronsCount; i++) {
-		printf("%d\t ", neuronVect[i]);
-	}
+	printf("\n\n======== LAYER NEURONS: %d ========\n ", L->vector->rows );
+	printVector(L->vector);
 	printf("\n-----------weights----------\n");
-	int* Mat = L->weightMatrix;
-	
-//	printf("\n ======== WEIGHTS ======== \n");
-
-	
-		int row = L->weightMatrixDimension[0];
-		int columns = L->weightMatrixDimension[1];
-		for (int i = 0; i < row; i++) {
-
-			for (int j = 0; j < columns; j++) {
-				int offset = i + row * j; //rows-major ordering
-					printf("%d \t", Mat[offset]);
-			}
-			printf("\n");
-
-		}
-
+	printMatrix(L->matrix);	
 	printf("\n");
 
 }
@@ -97,45 +74,17 @@ void printAllLayers(Layers* ls) {
 	for (int i = 0; i < ls->index-1; i++) {//< to not print the output layer
 		printLayer(ls->layers[i]);
 
+	printf("\n");
+	printf("\n");
+	printf("\n");
 	}
 }
 
 Layer constructLayer(size_t neuronsCount) {
-	int* neuronsVector = (int*)malloc(sizeof(int) * neuronsCount);
-	if (neuronsVector == NULL) {
-		printf("failled to malloc neuronsVector");
-		exit(-1);
-	}
-	for (int i = 0; i < neuronsCount; i++) {
-		neuronsVector[i] = NEURON_INIT;
-	}
+	Vector* vector= initVector(neuronsCount);	
 	Layer L;
-	L.neuronsVector = neuronsVector;
-	L.neuronsCount = neuronsCount;
+	L.vector = vector;
 	return L;
 
 }
- void initWeightMatrix(Layer* l, int dim[2]) {
-	 int row = dim[0];
-	 int columns = dim[1];
-	 int* matrix = (int*)malloc(row * columns* sizeof(int));
-	 if (matrix == NULL) {
-		 printf("cannot allocate memory for the matrix");
-		 exit(0);
-	 }
-	 for (int i = 0; i < row; i++) {
-
-		 for (int j = 0; j < columns; j++) {
-			int offset = i + row * j; //rows-major ordering
-			matrix[offset] = WEIGHT_INIT;
-		 }
-		 
-	 }
-	 l->weightMatrix = matrix;
-	 l->weightMatrixDimension[0] = dim[0];
-	 l->weightMatrixDimension[1] = dim[1];
-
- }
-
-
-
+ 

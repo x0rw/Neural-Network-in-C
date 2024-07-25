@@ -25,14 +25,14 @@ void printVector(Vector *V){
 void printMatrix(Matrix *M){
 	int rows =M->rows;
 	int cols =M->cols;
-	printf("\n");
 	for(int i=0; i<rows;i++){
-		printf("\n");
-		for(int j =0; j<cols;j++){
-			int offset = j+ rows *i;
-			printf("%f\t", M->matrix[offset]);
-		}
+	printf("\n");
+	for(int j =0; j<cols;j++){
+		int offset = j+ cols *i;
+		
+		printf("%f\t", M->matrix[offset]);
 	}
+}
 
 
 
@@ -72,7 +72,7 @@ Vector* MatrixMulVect(Matrix * A, Vector * B){
 	for(int i=0; i<rows;i++){
 		result[i]=0;
 		for(int j =0; j<cols;j++){
-			int offset = j+ rows *i;
+			int offset = j+ cols *i;
 			result[i]+=matrix[offset]*vector[j];
 		}
 	}
