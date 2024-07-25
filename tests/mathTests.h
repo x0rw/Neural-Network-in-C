@@ -11,6 +11,7 @@ void MatrixMulVectorTest(){
 	float matrix[9] = {1,2,3,4,5,6,7,8,9};
 	float vector[3] = {1,2,3};
 	float xp[3] = {14,32,50};
+	printVector(A);
 	
 	A->vector = vector;
 	X->vector = xp;

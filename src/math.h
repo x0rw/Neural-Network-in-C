@@ -12,6 +12,31 @@ typedef struct Vector{
 	float *vector;
 
 }Vector;
+
+void printVector(Vector *V){
+	printf("\n");
+	printf("\n");
+	for(int i=0; i<V->rows;i++){
+		printf("%f\t",V->vector[i]);
+	}
+	printf("\n");
+}
+
+void printMatrix(Matrix *M){
+	int rows =M->rows;
+	int cols =M->cols;
+	printf("\n");
+	for(int i=0; i<rows;i++){
+		printf("\n");
+		for(int j =0; j<cols;j++){
+			int offset = j+ rows *i;
+			printf("%f\t", M->matrix[offset]);
+		}
+	}
+
+
+
+}
 Vector * initVector(int rows){
 	Vector * vect = (Vector *)malloc(sizeof(Vector));
 	float * vector = (float *)calloc( rows,sizeof(float));
@@ -23,7 +48,7 @@ Vector * initVector(int rows){
 	vect->vector = vector;
 	return vect;
 }
-Vector * initMatrix(int rows, int cols){
+Matrix * initMatrix(int rows, int cols){
 	Matrix * mat = (Matrix *)malloc(sizeof(Matrix));
 	float * matrix = (float *)calloc( rows * cols, sizeof(float));
 	if(mat == NULL || matrix==NULL ){
@@ -55,8 +80,3 @@ Vector* MatrixMulVect(Matrix * A, Vector * B){
 	return resultVector;
 }
 
-void printVector(Vector * V){
-	for(int i =0; i<V->rows;i++){
-	printf(" %f\n", V->vector[i]);
-	}
-}

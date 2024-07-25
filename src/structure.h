@@ -50,7 +50,6 @@ void  addlayer(Layers* l, Layer* lay) {
 	}
 
 	int index = l->index;
-	printf("=%d=", l->index);	
 	l->layers[index]= lay;
 
 	if (l->index != 0) {
@@ -67,13 +66,14 @@ void  addlayer(Layers* l, Layer* lay) {
 void printLayer(Layer* L) {
 	if (L == NULL) { printf("layer is null"); exit(-1); }
 	int* neuronVect = L->neuronsVector;
-	printf("========NEURONS: %d ========\n ", L->neuronsCount );
+	printf("\n\n======== LAYER NEURONS: %d ========\n ", L->neuronsCount );
 	for (int i = 0; i < L->neuronsCount; i++) {
-		printf(" %d, ", neuronVect[i]);
+		printf("%d\t ", neuronVect[i]);
 	}
+	printf("\n-----------weights----------\n");
 	int* Mat = L->weightMatrix;
 	
-	printf("\n ======== WEIGHTS ======== \n");
+//	printf("\n ======== WEIGHTS ======== \n");
 
 	
 		int row = L->weightMatrixDimension[0];
@@ -88,7 +88,7 @@ void printLayer(Layer* L) {
 
 		}
 
-	printf("]\n======================\n ");
+	printf("\n");
 
 }
 
@@ -118,7 +118,6 @@ Layer constructLayer(size_t neuronsCount) {
  void initWeightMatrix(Layer* l, int dim[2]) {
 	 int row = dim[0];
 	 int columns = dim[1];
-	 printf("\n rows:%d, columns%d \n", row, columns);
 	 int* matrix = (int*)malloc(row * columns* sizeof(int));
 	 if (matrix == NULL) {
 		 printf("cannot allocate memory for the matrix");
