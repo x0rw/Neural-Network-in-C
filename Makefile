@@ -1,7 +1,7 @@
 all:program
 
 program: main.o 
-	gcc build/main.o -std=c99 -g -o build/output
+	gcc build/main.o -lm -std=c99 -g -o build/output
 
 main.o: main.c src/structure.h
 	gcc -std=c99 -c main.c -o build/main.o -ggdb -g 
@@ -17,3 +17,7 @@ debug:
 test:
 	gcc tests/main.c -o build/tests/mainTest
 	./build/tests/mainTest
+valgrind:
+	valgrind ./build/output
+gdb:
+	gdb ./build/output

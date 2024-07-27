@@ -42,6 +42,12 @@ Layers * newLayers(size_t size) {
 	return ls;
 
 }
+void outputN(Layers * l){
+	
+	printVector(l->layers[l->index-1]->vector);
+
+}
+
 void  addlayer(Layers* l, Layer* lay) {
 	if (l->index > l->size - 1) {
 		printf("Layers are full"); exit(-1);
@@ -52,7 +58,7 @@ void  addlayer(Layers* l, Layer* lay) {
 
 	if (l->index != 0) {
 		Layer* previouslayer = l->layers[index-1];
-		previouslayer->matrix = initMatrix(previouslayer->vector->rows,lay->vector->rows);
+		previouslayer->matrix = initMatrix(lay->vector->rows,previouslayer->vector->rows);
 	}
 	l->index++;
 	printf("+ New layer added \n");
@@ -81,7 +87,7 @@ void printAllLayers(Layers* ls) {
 }
 
 Layer constructLayer(size_t neuronsCount) {
-	Vector* vector= initVector(neuronsCount);	
+	Vector* vector= initVector(neuronsCount);
 	Layer L;
 	L.vector = vector;
 	return L;
