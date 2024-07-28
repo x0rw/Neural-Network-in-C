@@ -22,7 +22,7 @@ void printVector(Vector *V){
 	printf("\n");
 	printf("\n");
 	for(int i=0; i<V->rows;i++){
-		printf("%.2lf\n",V->vector[i]);
+		printf("%.5lf\n",V->vector[i]);
 	}
 	printf("\n");
 }
@@ -110,9 +110,9 @@ Vector* MatrixMulVect(Matrix * A, Vector * B){
 		for(int j =0; j<cols;j++){
 			int offset = j+ cols *i;
 			result[i]+=(float) matrix[offset]* (float)vector[j];
-			//printf("result  :  %d\n",result[i]);
+//			printf("offset :  %d\n",offset);
 		}
-		result[i] = result[i];
+		result[i] = sigmoid(result[i]);
 	}
 	return resultVector;
 }

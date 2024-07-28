@@ -10,8 +10,9 @@
 
 
 typedef struct {
-	Vector *vector;
-	Matrix *matrix;
+	Vector *vector; 
+	Matrix *matrix; 
+	Vector *delta; 
 }Layer;
 typedef struct Layers {
 	size_t size;
@@ -25,6 +26,8 @@ void initWeightMatrix(Layer* , int [2]);
 void addlayer(Layers *, Layer * );
 void printLayer(Layer*);
 void printAllLayers(Layers*);
+
+
 
 Layers * newLayers(size_t size) {
 	Layers* ls = (Layers*)malloc(sizeof(Layers));
@@ -42,9 +45,12 @@ Layers * newLayers(size_t size) {
 	return ls;
 
 }
-void outputN(Layers * l){
+Vector * lastLayer(Layers * l ){
+ return l->layers[l->index-1]->vector;
+}
+void printOutput(Layers * l){
 	
-	printVector(l->layers[l->index-1]->vector);
+	printVector(lastLayer(l));
 
 }
 

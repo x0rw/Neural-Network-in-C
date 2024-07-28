@@ -3,32 +3,40 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "src/structure.h"
-#include "src/propagation.h"
+#include "src/core.h"
 #define WEIGHT_INIT 1
 #define NEURON_INIT 1
 
 int main() {
  	Layer inputLayer = constructLayer(2);
- 	Layer hiddenLayer = constructLayer(400);
- 	Layer outputLayer = constructLayer(100);
- 	Layer outputLayer1 = constructLayer(10);
-	inputLayer.vector->vector[0]=21;
- 	inputLayer.vector->vector[1]=45.2;
-	printf("tab1:%f,\n",inputLayer.vector->vector[1]);
-	Layers* l = newLayers(4);
+ 	Layer hiddenLayer = constructLayer(2);
+ 	Layer outputLayer = constructLayer(1);
+	inputLayer.vector->vector[0]=0.35;
+ 	inputLayer.vector->vector[1]=0.9;
+	Layers* l = newLayers(3);
  	addlayer(l, &inputLayer);
  	addlayer(l, &hiddenLayer);
  	addlayer(l, &outputLayer);
- 	addlayer(l, &outputLayer1);
+	l->layers[0]->matrix->matrix[0]=0.1;
+	l->layers[0]->matrix->matrix[1]=0.8;
+	l->layers[0]->matrix->matrix[2]=0.4;
+	l->layers[0]->matrix->matrix[3]=0.6;
+
+	l->layers[1]->matrix->matrix[0]=0.3;
+	l->layers[1]->matrix->matrix[1]=0.9;
+ 	printAllLayers(l);
+	printf("===++++++++++++++++==========");	
 	forwardPropagation(l);
  	printAllLayers(l);
 	printf("=============");	
-	outputN(l);
+	printOutput(l);
+	Vector * expected=initVector(1);
+	expected->vector[0]=0.5;
+	//errorVect(lastLayer(l),expected);
+	//meanSquareErrorCost(lastLayer(l),expected);
+	calcDelta(l,expected);
 
-
-
-
-
+	printVector(l->layers[1]->delta);
 
 
 
