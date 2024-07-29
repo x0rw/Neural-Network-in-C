@@ -59,18 +59,23 @@ void backPropagation(Layers *ls){
   Layer ** layers = ls->layers;
   size_t layers_size = ls->size;
   Layer *previous_layer = layers[layers_size-1];
+  printf("\ndelta: %f ", previous_layer->delta->vector[0]);
   for (int i = (int)layers_size -2; i>=0; i--) {
     l = layers[i];
     int rows= l->matrix->rows;
     int cols= l->matrix->cols;
     float * weight = l->matrix->matrix;
-    float * delta = l->delta->vector;
-    float * prev_output = previous_layer->vector->vector;
+    float * delta = previous_layer->delta->vector;
+    float * output = l->vector->vector;
+
     for(int i=0; i<rows;i++){
 		
 		for(int j =0; j<cols;j++){
 			int offset = j+ cols *i;
-            printf("\noffset: %d, weight: %f, delta: %f ",i, weight[offset],delta[j]);
+            //printf("\nweight: %f \t ", weight[offset]);
+            weight[offset] = weight[offset]  + 1 *  output[j]* delta[i]; 
+            //printf(" delta: %f \t",  output[j]* delta[i]);
+            printf(" updated weight: %f \t", weight[offset]);
 		}
         printf("\n===========================\n");
 	}

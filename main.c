@@ -35,10 +35,14 @@ int main() {
 	//errorVect(lastLayer(l),expected);
 	//meanSquareErrorCost(lastLayer(l),expected);
 	calcDelta(l,expected);
-
+	printf("\nlayer======\n");
+	printVector(l->layers[0]->delta);
+	printf("\nlayer======\n");
 	printVector(l->layers[1]->delta);
+	printf("\nlayer======\n");
+	printVector(l->layers[2]->delta);
 
-
+	backPropagation(l);
 
 
 	printf("hedddllo");
