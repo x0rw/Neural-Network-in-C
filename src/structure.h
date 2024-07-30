@@ -12,6 +12,7 @@
 typedef struct {
 	Vector *vector; 
 	Matrix *matrix; 
+	Vector *bias; 
 	Vector *delta; 
 }Layer;
 typedef struct Layers {
@@ -54,17 +55,17 @@ void printOutput(Layers * l){
 
 }
 
-void  addlayer(Layers* l, Layer* lay) {
+void  addlayer(Layers* l, Layer* current_layer) {
 	if (l->index > l->size - 1) {
 		printf("Layers are full"); exit(-1);
 	}
 
 	int index = l->index;
-	l->layers[index]= lay;
+	l->layers[index]= current_layer;
 
 	if (l->index != 0) {
 		Layer* previouslayer = l->layers[index-1];
-		previouslayer->matrix = initMatrix(lay->vector->rows,previouslayer->vector->rows);
+		previouslayer->matrix = initMatrix(current_layer->vector->rows,previouslayer->vector->rows);
 	}
 	l->index++;
 	printf("+ New layer added \n");
@@ -73,8 +74,11 @@ void  addlayer(Layers* l, Layer* lay) {
 }
 void printLayer(Layer* L) {
 	if (L == NULL) { printf("layer is null"); exit(-1); }
+
 	printf("\n\n======== LAYER NEURONS: %d ========\n ", L->vector->rows );
 	printVector(L->vector);
+	printf("\n\n======== LAYER BIAS: %d ========\n ", L->bias->rows );
+	printVector(L->bias);
 	printf("\n-----------weights----------\n");
 	printMatrix(L->matrix);	
 	printf("\n");
@@ -94,8 +98,10 @@ void printAllLayers(Layers* ls) {
 
 Layer constructLayer(size_t neuronsCount) {
 	Vector* vector= initVector(neuronsCount);
+	Vector* bias= initVector(neuronsCount);
 	Layer L;
 	L.vector = vector;
+	L.bias = bias;
 	return L;
 
 }

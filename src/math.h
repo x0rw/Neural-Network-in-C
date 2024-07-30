@@ -51,7 +51,7 @@ void randMatrix(Matrix * A){
 	for(int i=0; i<rows;i++){
 		for(int j =0; j<cols;j++){
 			int offset = j+ cols *i;
-			matrix[offset]=(float )rand()/RAND_MAX;	
+			matrix[offset]=(float )rand() / RAND_MAX - 0.5;	
 			//matrix[offset]=1.22;	
 		}
 	}
@@ -86,18 +86,19 @@ Matrix * initMatrix(int rows, int cols){
 }
 
 
-Vector* MatrixMulVect(Matrix * A, Vector * B){
+Vector* MatrixMulVect(Matrix * A, Vector * B, Vector * C){
 	int rows =A->rows;
 	int cols =A->cols;
 	float * matrix= A->matrix;	
 	float *vector= B->vector;
+	float *vectorC= C->vector;
 
 	printf("----------------%d,%d\n\n",rows,cols);
 	if(cols == 1){//a matrix could be a vector
 		Vector * resultVector = initVector(1); 
 		float r= 0.0f;
 		for(int i = 0; i<rows;i++){
-			r +=matrix[i]*vector[i];
+			r +=matrix[i]*vector[i] +vectorC[i]  ;
 			
 		}
 		resultVector->vector[0] = sigmoid(r);
@@ -109,8 +110,7 @@ Vector* MatrixMulVect(Matrix * A, Vector * B){
 		result[i]=0;
 		for(int j =0; j<cols;j++){
 			int offset = j+ cols *i;
-			result[i]+=(float) matrix[offset]* (float)vector[j];
-//			printf("offset :  %d\n",offset);
+			result[i]+=(float) matrix[offset]* (float)vector[j] + (float)vectorC[j];
 		}
 		result[i] = sigmoid(result[i]);
 	}

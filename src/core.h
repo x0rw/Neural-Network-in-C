@@ -1,4 +1,23 @@
 
+
+void meanSquareErrorCost(Vector* V, Vector* EV){
+  int size = V->rows;
+  float err=0.0f;
+  for (int i = 0; i < size; i++){
+    err += (V->vector[i] - EV->vector[i]) * (V->vector[i] - EV->vector[i]);
+  }
+  err = err/ (size+1);
+  printf("\n\n MSE : %f \n", err);
+}
+
+
+void errDiffVector(Vector* V, Vector* EV){
+  int size = V->rows;
+  for (int i = 0; i < size; i++){
+    printf("VECT ERR: %f\n ",V->vector[i] - EV->vector[i]);
+  }
+
+}
 void forwardPropagation(Layers *L)
 
 {
@@ -9,7 +28,7 @@ void forwardPropagation(Layers *L)
   size_t layers_size = L->index;
   for (int i = 0; i < (int)layers_size-1; i++) {
     l = layers[(long)i + 1];
-    res_vector = MatrixMulVect(layers[i]->matrix,layers[i]->vector);
+    res_vector = MatrixMulVect(layers[i]->matrix,layers[i]->vector,layers[i]->bias);
     l->vector = res_vector;
   }
   return;
@@ -59,20 +78,26 @@ void backPropagation(Layers *ls){
   Layer ** layers = ls->layers;
   size_t layers_size = ls->size;
   Layer *previous_layer = layers[layers_size-1];
-  for (int i = (int)layers_size -2; i>=0; i--) {
-    l = layers[i];
+  printf("\ndelta: %f ", previous_layer->delta->vector[0]);
+  for (int ik = (int)layers_size -2; ik>=0; ik--) {
+    l = layers[ik];
     int rows= l->matrix->rows;
     int cols= l->matrix->cols;
     float * weight = l->matrix->matrix;
-    float * delta = l->delta->vector;
-    float * prev_output = previous_layer->vector->vector;
+    float * delta = previous_layer->delta->vector;
+    float * output = l->vector->vector;
+    float * bias = l->bias->vector;
+
     for(int i=0; i<rows;i++){
+    
 		
 		for(int j =0; j<cols;j++){
 			int offset = j+ cols *i;
-            printf("\noffset: %d, weight: %f, delta: %f ",i, weight[offset],delta[j]);
+            //printf("\nweight: %f \t ", weight[offset]);
+             
+             bias[j] = bias[j]  + 1 *   delta[i]; 
+            weight[offset] = weight[offset]  + 1 *  output[j]* delta[i];
 		}
-        printf("\n===========================\n");
 	}
     previous_layer = l;
 
