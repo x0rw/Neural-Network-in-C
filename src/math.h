@@ -19,8 +19,6 @@ typedef struct Vector{
 }Vector;
 
 void printVector(Vector *V){
-	printf("\n");
-	printf("\n");
 	for(int i=0; i<V->rows;i++){
 		printf("%.5lf\n",V->vector[i]);
 	}
@@ -85,7 +83,6 @@ Matrix * initMatrix(int rows, int cols){
 	return mat;
 }
 
-
 Vector* MatrixMulVect(Matrix * A, Vector * B, Vector * C){
 	int rows =A->rows;
 	int cols =A->cols;
@@ -93,7 +90,6 @@ Vector* MatrixMulVect(Matrix * A, Vector * B, Vector * C){
 	float *vector= B->vector;
 	float *vectorC= C->vector;
 
-	printf("----------------%d,%d\n\n",rows,cols);
 	if(cols == 1){//a matrix could be a vector
 		Vector * resultVector = initVector(1); 
 		float r= 0.0f;
@@ -101,7 +97,7 @@ Vector* MatrixMulVect(Matrix * A, Vector * B, Vector * C){
 			r +=matrix[i]*vector[i] +vectorC[i]  ;
 			
 		}
-		resultVector->vector[0] = sigmoid(r);
+		resultVector->vector[0] = r;
 		return resultVector;
 	}	
 	Vector * resultVector = initVector(rows); 

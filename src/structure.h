@@ -22,13 +22,27 @@ typedef struct Layers {
 } Layers;
 
 Layers * newLayers(size_t);
-Layer constructLayer(size_t);
+Layer * constructLayer(size_t);
 void initWeightMatrix(Layer* , int [2]);
 void addlayer(Layers *, Layer * );
 void printLayer(Layer*);
 void printAllLayers(Layers*);
 
 
+Layers * initLayers(){
+	Layer * inputLayer = constructLayer(2);
+ 	Layer * hiddenLayer = constructLayer(2);
+ 	Layer * outputLayer = constructLayer(1);
+
+	Layers* l = newLayers(3);
+ 	addlayer(l, inputLayer);
+ 	addlayer(l, hiddenLayer);
+ 	addlayer(l, outputLayer);
+	return l;
+}
+Vector * inputLayer(Layers * l ){
+	return l->layers[0]->vector;
+}
 
 Layers * newLayers(size_t size) {
 	Layers* ls = (Layers*)malloc(sizeof(Layers));
@@ -90,18 +104,15 @@ void printAllLayers(Layers* ls) {
 	for (int i = 0; i < ls->index-1; i++) {//< to not print the output layer
 		printLayer(ls->layers[i]);
 
-	printf("\n");
-	printf("\n");
-	printf("\n");
 	}
 }
 
-Layer constructLayer(size_t neuronsCount) {
+Layer * constructLayer(size_t neuronsCount) {
 	Vector* vector= initVector(neuronsCount);
 	Vector* bias= initVector(neuronsCount);
-	Layer L;
-	L.vector = vector;
-	L.bias = bias;
+	Layer * L = (Layer *) malloc(sizeof(Layer));
+	L->vector = vector;
+	L->bias = bias;
 	return L;
 
 }

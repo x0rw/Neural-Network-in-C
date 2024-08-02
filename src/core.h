@@ -1,4 +1,6 @@
-
+#ifndef LR
+#define LR 0.6
+#endif
 
 void meanSquareErrorCost(Vector* V, Vector* EV){
   int size = V->rows;
@@ -7,14 +9,14 @@ void meanSquareErrorCost(Vector* V, Vector* EV){
     err += (V->vector[i] - EV->vector[i]) * (V->vector[i] - EV->vector[i]);
   }
   err = err/ (size+1);
-  printf("\n\n MSE : %f \n", err);
+  printf("\n\nMSE : %f \n", err);
 }
 
 
 void errDiffVector(Vector* V, Vector* EV){
   int size = V->rows;
   for (int i = 0; i < size; i++){
-    printf("VECT ERR: %f\n ",V->vector[i] - EV->vector[i]);
+//    printf("VECT ERR: %f\n ",V->vector[i] - EV->vector[i]);
   }
 
 }
@@ -27,7 +29,7 @@ void forwardPropagation(Layers *L)
   Layer ** layers = L->layers;
   size_t layers_size = L->index;
   for (int i = 0; i < (int)layers_size-1; i++) {
-    l = layers[(long)i + 1];
+    l = layers[i + 1];
     res_vector = MatrixMulVect(layers[i]->matrix,layers[i]->vector,layers[i]->bias);
     l->vector = res_vector;
   }
@@ -51,7 +53,7 @@ void calcDelta(Layers *ls,Vector *ybar)
   Vector *lvector = initVector(temp_layer->vector->rows);
   for (int j = 0; j < temp_layer->vector->rows; j++) {
     float m = temp_layer->vector->vector[j];
-    lvector->vector[j] = (ybar->vector[j] - m) * (1.0 - m) * m;
+    lvector->vector[j] = (ybar->vector[j] - m) * (1 - m) * m;
   }
   temp_layer->delta = lvector;
   for (int i = (int)layers_size + -2; i>=0; i--) {
@@ -78,7 +80,6 @@ void backPropagation(Layers *ls){
   Layer ** layers = ls->layers;
   size_t layers_size = ls->size;
   Layer *previous_layer = layers[layers_size-1];
-  printf("\ndelta: %f ", previous_layer->delta->vector[0]);
   for (int ik = (int)layers_size -2; ik>=0; ik--) {
     l = layers[ik];
     int rows= l->matrix->rows;
@@ -88,15 +89,11 @@ void backPropagation(Layers *ls){
     float * output = l->vector->vector;
     float * bias = l->bias->vector;
 
-    for(int i=0; i<rows;i++){
-    
-		
-		for(int j =0; j<cols;j++){
-			int offset = j+ cols *i;
-            //printf("\nweight: %f \t ", weight[offset]);
-             
-             bias[j] = bias[j]  + 1 *   delta[i]; 
-            weight[offset] = weight[offset]  + 1 *  output[j]* delta[i];
+    for(int i=0; i<rows; i++){
+	for(int j =0; j<cols; j++){
+		int offset = j + cols * i;
+		bias[j] = bias[j]  + LR * delta[i]; 
+		weight[offset] = weight[offset]  + LR *  output[j] * delta[i];
 		}
 	}
     previous_layer = l;
