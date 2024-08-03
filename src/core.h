@@ -1,6 +1,43 @@
 #ifndef LR
-#define LR 0.6
+#define LR 0.8
 #endif
+void calcDelta(Layers *,Vector *);
+void forwardPropagation(Layers *);
+void backPropagation(Layers *);
+void errDiffVector(Vector* , Vector*);
+void meanSquareErrorCost(Vector* , Vector* );
+void train(Layers * , Vector *);
+Layers * NN(Matrix * , Matrix *, int);
+
+
+
+void train(Layers *l ,Vector * expected){
+  printVector(expected);
+	forwardPropagation(l);
+	calcDelta(l,expected);
+	backPropagation(l);
+	meanSquareErrorCost(lastLayer(l),expected);
+	errDiffVector(lastLayer(l),expected);
+}
+Layers * NN(Matrix * input, Matrix * output,int epoch){
+	Layers * l = initLayers();
+	Vector *  inputlayer =inputLayer(l); 
+	Vector * expected=initVector(output->cols);
+	int output_cols = output->cols;
+	int rows = input->rows;
+	int cols = input->cols;
+	for(int k=0; k<epoch  ; k++){
+		
+		for(int i=0; i<rows; i++){
+			memcpy(inputLayer(l)->vector,input->matrix+(i*cols),cols* sizeof(float)); 	
+			memcpy(expected->vector,output->matrix+i*output_cols,output_cols* sizeof(float)); 	
+			train(l, expected);
+			printOutput(l);
+		}
+	}
+	return l;
+}
+
 
 void meanSquareErrorCost(Vector* V, Vector* EV){
   int size = V->rows;
@@ -56,7 +93,7 @@ void calcDelta(Layers *ls,Vector *ybar)
     lvector->vector[j] = (ybar->vector[j] - m) * (1 - m) * m;
   }
   temp_layer->delta = lvector;
-  for (int i = (int)layers_size + -2; i>=0; i--) {
+  for (int i = layers_size -2; i>=0; i--) {
     l = layers[i];
     lvector = l->vector;
     outdelta = initVector(lvector->rows);
@@ -90,11 +127,11 @@ void backPropagation(Layers *ls){
     float * bias = l->bias->vector;
 
     for(int i=0; i<rows; i++){
-	for(int j =0; j<cols; j++){
-		int offset = j + cols * i;
-		bias[j] = bias[j]  + LR * delta[i]; 
-		weight[offset] = weight[offset]  + LR *  output[j] * delta[i];
-		}
+      for(int j =0; j<cols; j++){
+        int offset = j + cols * i;
+        bias[j] = bias[j]  + LR * delta[i]; 
+        weight[offset] = weight[offset]  + LR *  output[j] * delta[i];
+        }
 	}
     previous_layer = l;
 

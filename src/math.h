@@ -113,4 +113,7 @@ Vector* MatrixMulVect(Matrix * A, Vector * B, Vector * C){
 	return resultVector;
 }
 
-
+void * vectorize(Matrix * source, Vector *destination,  int row){
+	memcpy(destination->vector, source->matrix+ row * source->cols, source->cols * sizeof(float)); 	
+	return;
+}
