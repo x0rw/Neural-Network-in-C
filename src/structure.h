@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "math.h"
+#include "../include/math.h"
+
 #define WEIGHT_INIT 1
 #define NEURON_INIT 1
 
@@ -37,7 +38,8 @@ Layers * initLayers(){
 	Layers* l = newLayers(3);
  	addlayer(l, inputLayer);
  	addlayer(l, hiddenLayer);
- 	addlayer(l, outputLayer);
+ 	addlayer(l, outputLayer
+	);
 	return l;
 }
 Vector * inputLayer(Layers * l ){

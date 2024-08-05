@@ -1,10 +1,14 @@
 all:program
 
-program: main.o 
-	gcc build/main.o -lm -std=c99 -g -o build/output
 
-main.o: main.c src/structure.h
-	gcc -std=c99 -c main.c -o build/main.o -ggdb -g 
+program: main.o math.o
+	gcc build/main.o build/math.o -std=c99 -lm  -g -o build/output
+
+main.o: main.c 
+	gcc -c main.c -o build/main.o -ggdb -g 
+
+math.o: src/math.c
+	gcc -c src/math.c -o build/math.o -lm -ggdb -g 
 
 clean:
 	rm build/*.o 

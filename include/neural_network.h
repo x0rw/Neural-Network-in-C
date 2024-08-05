@@ -4,8 +4,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "../src/structure.h"
-#include "../src/core.h"
 
 typedef struct neural_network{
 	int layers_size;

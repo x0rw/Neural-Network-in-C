@@ -136,6 +136,5 @@ void backPropagation(Layers *ls){
     previous_layer = l;
 
 
-
   }
 }
