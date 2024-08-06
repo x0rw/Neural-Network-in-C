@@ -2,49 +2,37 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "src/structure.h"
-#include "src/core.h"
+#include "include/math.h"
+#include "include/structure.h"
+#include "include/core.h"
+
+#include "include/neural_network.h"
+#include <string.h>
+#include <string.h>
 #define WEIGHT_INIT 1
 #define NEURON_INIT 1
 
 int main() {
- 	Layer inputLayer = constructLayer(2);
- 	Layer hiddenLayer = constructLayer(2);
- 	Layer outputLayer = constructLayer(1);
-	inputLayer.vector->vector[0]=0.35;
- 	inputLayer.vector->vector[1]=0.9;
-	Layers* l = newLayers(3);
- 	addlayer(l, &inputLayer);
- 	addlayer(l, &hiddenLayer);
- 	addlayer(l, &outputLayer);
-	l->layers[0]->matrix->matrix[0]=0.1;
-	l->layers[0]->matrix->matrix[1]=0.8;
-	l->layers[0]->matrix->matrix[2]=0.4;
-	l->layers[0]->matrix->matrix[3]=0.6;
-
-	l->layers[1]->matrix->matrix[0]=0.3;
-	l->layers[1]->matrix->matrix[1]=0.9;
- 	printAllLayers(l);
-	printf("===++++++++++++++++==========");	
-	forwardPropagation(l);
- 	printAllLayers(l);
-	printf("=============");	
-	printOutput(l);
-	Vector * expected=initVector(1);
-	expected->vector[0]=0.5;
-	//errorVect(lastLayer(l),expected);
-	//meanSquareErrorCost(lastLayer(l),expected);
-	calcDelta(l,expected);
-	printf("\nlayer======\n");
-	printVector(l->layers[0]->delta);
-	printf("\nlayer======\n");
-	printVector(l->layers[1]->delta);
-	printf("\nlayer======\n");
-	printVector(l->layers[2]->delta);
-
-	backPropagation(l);
-
-
-	printf("hedddllo");
+	Matrix * inputs = initMatrix(4,2);
+	Matrix * outputs = initMatrix(4,1);
+	float inputsf[8] ={1,0,	1,1,	 0,1,	0.0};
+	float outputf[4] = {1,	0,	 1,	0};
+	int layers[3] = {1,2,1};
+	memcpy(inputs->matrix, inputsf,sizeof(float)*8);
+	memcpy(outputs->matrix, outputf,sizeof(float)*4);
+	Vector * layersV = initVector(3);
+	memcpy(layersV->vector, layers,sizeof(int)*3);
+	int layers_size=3;
+	neural_network nn = {
+		.layers_size=layers_size,
+		.layer_size = layersV,
+		.learning_rate = 0.8,
+		.input =inputs,
+		.output =outputs
+	};
+	construct_network(&nn);
+	train_network(&nn,1);
+	//	NN(inputs,outputs,10000);
+	printf("\n hedddllo \n");
 	return 0;
 }

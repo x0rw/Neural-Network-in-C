@@ -2,4 +2,4 @@
 /tests/*.out
 /**.swp
 **.swp
-
+.vscode

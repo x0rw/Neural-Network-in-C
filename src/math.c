@@ -1,26 +1,10 @@
 
-#include <stdio.h>
-#include <time.h>
-#include <math.h>
-#define EULER_NUMBER 2.71828
+#include "../include/math.h"
 float sigmoid(float f){
 	    return (1 / (1 + powf(EULER_NUMBER, -f)));
 }
-typedef struct Matrix{
-	int rows;
-	int cols;
-	float *matrix;
-
-}Matrix;
-typedef struct Vector{
-	int rows;
-	float *vector;
-
-}Vector;
 
 void printVector(Vector *V){
-	printf("\n");
-	printf("\n");
 	for(int i=0; i<V->rows;i++){
 		printf("%.5lf\n",V->vector[i]);
 	}
@@ -51,7 +35,7 @@ void randMatrix(Matrix * A){
 	for(int i=0; i<rows;i++){
 		for(int j =0; j<cols;j++){
 			int offset = j+ cols *i;
-			matrix[offset]=(float )rand()/RAND_MAX;	
+			matrix[offset]=(float )rand() / RAND_MAX - 0.5;	
 			//matrix[offset]=1.22;	
 		}
 	}
@@ -85,22 +69,21 @@ Matrix * initMatrix(int rows, int cols){
 	return mat;
 }
 
-
-Vector* MatrixMulVect(Matrix * A, Vector * B){
+Vector* MatrixMulVect(Matrix * A, Vector * B, Vector * C){
 	int rows =A->rows;
 	int cols =A->cols;
 	float * matrix= A->matrix;	
 	float *vector= B->vector;
+	float *vectorC= C->vector;
 
-	printf("----------------%d,%d\n\n",rows,cols);
 	if(cols == 1){//a matrix could be a vector
 		Vector * resultVector = initVector(1); 
 		float r= 0.0f;
 		for(int i = 0; i<rows;i++){
-			r +=matrix[i]*vector[i];
+			r +=matrix[i]*vector[i] +vectorC[i]  ;
 			
 		}
-		resultVector->vector[0] = sigmoid(r);
+		resultVector->vector[0] = r;
 		return resultVector;
 	}	
 	Vector * resultVector = initVector(rows); 
@@ -109,12 +92,13 @@ Vector* MatrixMulVect(Matrix * A, Vector * B){
 		result[i]=0;
 		for(int j =0; j<cols;j++){
 			int offset = j+ cols *i;
-			result[i]+=(float) matrix[offset]* (float)vector[j];
-//			printf("offset :  %d\n",offset);
+			result[i]+=(float) matrix[offset]* (float)vector[j] + (float)vectorC[j];
 		}
 		result[i] = sigmoid(result[i]);
 	}
 	return resultVector;
 }
 
-
+void * vectorize(Matrix * source, Vector *destination,  int row){
+	memcpy(destination->vector, source->matrix+ row * source->cols, source->cols * sizeof(float)); 	
+}
