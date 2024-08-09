@@ -1,33 +1,25 @@
-#include "../include/structure.h"
 #include "../include/core.h"
 
 
-
-void train(Layers *l ,Vector * expected){
-  printVector(expected);
+void test_net(neural_network *nn ,Vector * expected){
+  Layers *l = nn->layers;
+  int lsize = l->size;
+	forwardPropagation(l);
+  printf("\n");
+  printf("\ninput : ");
+  printVector(l->layers[0]->vector);
+  printf("\noutput : ");
+  printVector(l->layers[lsize-1]->vector);
+}
+void train(neural_network *nn ,Vector * expected){
+  Layers *l = nn->layers;
 	forwardPropagation(l);
 	calcDelta(l,expected);
-	backPropagation(l);
-	meanSquareErrorCost(lastLayer(l),expected);
-	errDiffVector(lastLayer(l),expected);
-}
-Layers * NN(Matrix * input, Matrix * output,int epoch){
-	Layers * l = initLayers();
-	Vector *  inputlayer =inputLayer(l); 
-	Vector * expected=initVector(output->cols);
-	int output_cols = output->cols;
-	int rows = input->rows;
-	int cols = input->cols;
-	for(int k=0; k<epoch  ; k++){
-		
-		for(int i=0; i<rows; i++){
-			memcpy(inputLayer(l)->vector,input->matrix+(i*cols),cols* sizeof(float)); 	
-			memcpy(expected->vector,output->matrix+i*output_cols,output_cols* sizeof(float)); 	
-			train(l, expected);
-			printOutput(l);
-		}
-	}
-	return l;
+	backPropagation(nn);
+ // printVector(l->layers[2]->vector);
+
+//	meanSquareErrorCost(lastLayer(l),expected);
+  //errDiffVector(l->layers[2]->vector,expected);
 }
 
 
@@ -37,7 +29,7 @@ void meanSquareErrorCost(Vector* V, Vector* EV){
   for (int i = 0; i < size; i++){
     err += (V->vector[i] - EV->vector[i]) * (V->vector[i] - EV->vector[i]);
   }
-  err = err/ (size+1);
+  err = err/ (size);
   printf("\n\nMSE : %f \n", err);
 }
 
@@ -45,7 +37,7 @@ void meanSquareErrorCost(Vector* V, Vector* EV){
 void errDiffVector(Vector* V, Vector* EV){
   int size = V->rows;
   for (int i = 0; i < size; i++){
-//    printf("VECT ERR: %f\n ",V->vector[i] - EV->vector[i]);
+    printf("VECT ERR: %f\n ",V->vector[i] - EV->vector[i]);
   }
 
 }
@@ -80,10 +72,12 @@ void calcDelta(Layers *ls,Vector *ybar)
   size_t layers_size = ls->size;
   Layer * temp_layer = layers[layers_size - 1];
   Vector *lvector = initVector(temp_layer->vector->rows);
+  //calculate delta for the last layer
   for (int j = 0; j < temp_layer->vector->rows; j++) {
     float m = temp_layer->vector->vector[j];
     lvector->vector[j] = (ybar->vector[j] - m) * (1 - m) * m;
   }
+  //calculate delta for the other layers
   temp_layer->delta = lvector;
   for (int i = layers_size -2; i>=0; i--) {
     l = layers[i];
@@ -104,7 +98,10 @@ void calcDelta(Layers *ls,Vector *ybar)
   return;
 }
 
-void backPropagation(Layers *ls){
+void backPropagation(neural_network *nn){
+  Layers *ls = nn->layers;
+  int learning_rate = nn->learning_rate;
+  //printf("\nlearning rate: %d\n", learning_rate);
   Layer *l;
   Layer ** layers = ls->layers;
   size_t layers_size = ls->size;
@@ -121,8 +118,8 @@ void backPropagation(Layers *ls){
     for(int i=0; i<rows; i++){
       for(int j =0; j<cols; j++){
         int offset = j + cols * i;
-        bias[j] = bias[j]  + LR * delta[i]; 
-        weight[offset] = weight[offset]  + LR *  output[j] * delta[i];
+        bias[j] = bias[j]  + learning_rate * delta[i]; 
+        weight[offset] = weight[offset]  + learning_rate *  output[j] * delta[i];
         }
 	}
     previous_layer = l;

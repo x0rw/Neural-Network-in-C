@@ -2,7 +2,7 @@ all:program
 
 
 program: main.o math.o structure.o core.o neural_network.o
-	gcc build/main.o build/math.o build/structure.o build/core.o build/neural_network.o -std=c99 -lm  -g -o build/output
+	gcc build/main.o build/math.o build/structure.o build/core.o build/neural_network.o -std=c99 -lm  -g -o bin/main
 
 main.o: main.c 
 	gcc -c main.c -o build/main.o -ggdb -g 
@@ -22,16 +22,16 @@ neural_network.o: src/neural_network.c
 
 clean:
 	rm build/*.o 
-	rm build/output
+	rm bin/*
 run:
-	./build/output
+	./bin/main
 debug:
-	gdb ./build/output
+	gdb ./bin/main
 
 test:
 	gcc tests/main.c -o build/tests/mainTest
 	./build/tests/mainTest
 valgrind:
-	valgrind ./build/output
+	valgrind ./bin/main
 gdb:
-	gdb ./build/output
+	gdb ./bin/main

@@ -6,9 +6,8 @@ float sigmoid(float f){
 
 void printVector(Vector *V){
 	for(int i=0; i<V->rows;i++){
-		printf("%.5lf\n",V->vector[i]);
+		printf("%.5lf\t",V->vector[i]);
 	}
-	printf("\n");
 }
 
 void printMatrix(Matrix *M){
@@ -83,7 +82,7 @@ Vector* MatrixMulVect(Matrix * A, Vector * B, Vector * C){
 			r +=matrix[i]*vector[i] +vectorC[i]  ;
 			
 		}
-		resultVector->vector[0] = r;
+		resultVector->vector[0] =  sigmoid(r);
 		return resultVector;
 	}	
 	Vector * resultVector = initVector(rows); 
